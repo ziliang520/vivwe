@@ -1,41 +1,30 @@
 package com.core.config;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.core.mapper.CrudMapper;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.spring.mapper.MapperScannerConfigurer;
-
-import javax.sql.DataSource;
+import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import java.util.Properties;
 
-@Slf4j
 @Configuration
+@AutoConfigureAfter(MybatisAutoConfiguration.class)
 public class MyBatisConfig {
 
-    @Autowired
-    private DataSource dataSource;
+    @Bean
+    public MapperScannerConfigurer mapperScannerConfigurer() {
+        MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+        mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
+        mapperScannerConfigurer.setBasePackage("com.core.mapper");
 
-    @Bean(name = "sqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactoryBean() {
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(dataSource);
-        bean.setTypeAliasesPackage("com.core.entity");//每一张表对应的实体类
-
-        //添加XML目录
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        try {
-            bean.setMapperLocations(resolver.getResources("classpath:src/java/com/core/mapper/*.xml"));//每张表对应的xml文件
-            return bean.getObject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        Properties properties = new Properties();
+        properties.setProperty("mappers", CrudMapper.class.getName());
+        properties.setProperty("notEmpty", "false");
+        properties.setProperty("IDENTITY", "MYSQL");
+        properties.setProperty("ORDER","BEFORE");
+        mapperScannerConfigurer.setProperties(properties);
+        return mapperScannerConfigurer;
     }
 
 }
