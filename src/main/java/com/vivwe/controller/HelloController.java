@@ -1,15 +1,23 @@
 package com.vivwe.controller;
 
-import org.springframework.context.annotation.ComponentScan;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/hello")
+@Configuration
 public class HelloController {
 
-    @RequestMapping("/sayHello")
-    public String index(){
-        return "Greetings from Spring Boot!";
+    @RequestMapping(value = "/sayHello")
+    public String index(String name){
+        return name + ", 你好！";
+    }
+
+    @Bean
+    public String helloWorld(){
+        return "hello world 2019!";
     }
 }
