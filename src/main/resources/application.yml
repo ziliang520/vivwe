@@ -7,3 +7,5 @@ spring:
 mybatis:
   typeAliasesPackage: com.vivwe.entity
   mapperLocations: classpath:com/vivwe/mapper/*.xml
+
+

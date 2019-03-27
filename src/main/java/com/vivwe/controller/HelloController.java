@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/hello")
-@Configuration
 public class HelloController {
 
     @Autowired
